@@ -169,8 +169,7 @@ const PlannerApp = () => {
             🎉 TDD Plan Completed!{" "}
           </Text>
           <Text> File: .planning / db.json </Text>
-          <Text> Tests to write: {db.data.plan?.testCases.length} </Text>
-          <Text> Implementation steps: {db.data.plan?.implementationSteps.length} </Text>
+          <Text> Total steps planned: {db.data.plan?.steps?.length || 0} </Text>
         </Box>
       )}
     </Box>
