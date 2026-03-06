@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+*.log
+.DS_Store
+*.tgz
+.env
+.env.local
+.env.*.local
+native/target/
+trades.csv
+trading-db.json
+trading.db
+*.tmp
+.npmrc
