@@ -11,8 +11,8 @@ export const AVAILABLE_MODELS = [
   },
   { label: "GPT-4o (OpenAI)", value: "gpt-4o", provider: "openai", pkg: "@ai-sdk/openai" },
   {
-    label: "Gemini 1.5 Pro (Google)",
-    value: "gemini-1.5-pro-latest",
+    label: "Gemini 2.0 Flash (Google)",
+    value: "gemini-2.0-flash",
     provider: "google",
     pkg: "@ai-sdk/google",
   },

@@ -178,4 +178,4 @@ const PlannerApp = () => {
 };
 
 const app = render(<PlannerApp />);
-await app.waitUntilExit();
+app.waitUntilExit().catch(console.error);

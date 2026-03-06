@@ -12,7 +12,7 @@ const google = createGoogleGenerativeAI({
 });
 
 export async function generateSpec(goal: string, _config: ModelConfig) {
-  const model = google("gemini-3.0-flash");
+  const model = google("gemini-2.0-flash");
 
   const { output: object } = await generateText({
     model,
@@ -24,7 +24,7 @@ export async function generateSpec(goal: string, _config: ModelConfig) {
 }
 
 export async function generateTddPlan(spec: any, _config: ModelConfig) {
-  const model = google("gemini-3.0-flash");
+  const model = google("gemini-2.0-flash");
 
   const { output: object } = await generateText({
     model,
