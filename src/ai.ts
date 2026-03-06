@@ -1,13 +1,18 @@
 import { generateText, Output } from "ai";
-import { getModel, ModelConfig } from "./lib/models";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { ModelConfig } from "./lib/models";
 import { SpecSchema, PlanSchema } from "./db";
 
-export async function generateSpec(goal: string, config: ModelConfig) {
-  const model = await getModel({
-    provider: "google",
-    modelId: "gemini-3.0-flash",
-    pkg: "@ai-sdk/google",
-  });
+const google = createGoogleGenerativeAI({
+  apiKey:
+    process.env.GOOGLE_GENERATIVE_AI_API_KEY ||
+    process.env.GEMINI_API_KEY ||
+    process.env.GOOGLE_API_KEY ||
+    "",
+});
+
+export async function generateSpec(goal: string, _config: ModelConfig) {
+  const model = google("gemini-3.0-flash");
 
   const { output: object } = await generateText({
     model,
@@ -18,12 +23,8 @@ export async function generateSpec(goal: string, config: ModelConfig) {
   return object;
 }
 
-export async function generateTddPlan(spec: any, config: ModelConfig) {
-  const model = await getModel({
-    provider: "google",
-    modelId: "gemini-3.0-flash",
-    pkg: "@ai-sdk/google",
-  });
+export async function generateTddPlan(spec: any, _config: ModelConfig) {
+  const model = google("gemini-3.0-flash");
 
   const { output: object } = await generateText({
     model,

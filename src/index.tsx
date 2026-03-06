@@ -179,4 +179,3 @@ const PlannerApp = () => {
 
 const app = render(<PlannerApp />);
 await app.waitUntilExit();
-
