@@ -6,7 +6,7 @@
   },
   "type": "module",
   "scripts": {
-    "dev": "tsx src/index.tsx",
+    "dev": "tsx watch src/index.tsx",
     "build": "tsup src/index.tsx --format esm --clean",
     "start": "node dist/index.js",
     "lint": "oxlint",
