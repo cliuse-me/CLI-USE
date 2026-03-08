@@ -13,7 +13,6 @@ import { AIEngine } from "./ai/engine";
 const initialGoal = process.argv.slice(2).join(" ");
 
 const PlannerApp = () => {
-  const { exit } = useApp();
   const [db, setDb] = useState<any>(null);
   const [activeModel, setActiveModel] = useState<ModelConfig | null>(null);
 
