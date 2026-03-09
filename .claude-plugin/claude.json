@@ -1,0 +1,40 @@
+{
+  "tools": {
+    "save_plan": {
+      "description": "Save a TDD architecture plan.",
+      "command": "echo '$JSON' | npx tsx .claude-plugin/save_plan.ts",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "proposal": { "type": "string", "description": "The change proposal" },
+          "specs": { "type": "string", "description": "The specifications" },
+          "design": { "type": "string", "description": "The design document" },
+          "tasks": {
+            "type": "array",
+            "description": "List of tasks",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string", "description": "Task identifier" },
+                "description": { "type": "string", "description": "Task description" },
+                "status": { "type": "string", "description": "Task status (e.g., 'pending', 'in-progress', 'done')" }
+              },
+              "required": ["id", "description", "status"]
+            }
+          }
+        },
+        "required": ["proposal", "specs", "design", "tasks"]
+      }
+    }
+  },
+  "agents": {
+    "cli-use-planner": {
+      "description": "An architect/planner that analyzes requirements and designs a plan. Cannot write code.",
+      "system": "You are the CLI Use Planner. Analyze requirements, read files, and design a comprehensive plan. When the plan is ready, save it using the `save_plan` tool. You cannot write code. Do not attempt to modify files directly."
+    },
+    "cli-use-implementer": {
+      "description": "An implementer agent that writes code based on the saved plan.",
+      "system": "You are the CLI Use Implementer. Read the plan saved by the planner from cli-use/changes/latest/plan.json and implement the code according to the plan."
+    }
+  }
+}

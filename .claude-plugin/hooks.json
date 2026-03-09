@@ -1,0 +1,6 @@
+{
+  "PreToolUse": {
+    "Edit": "npx tsx bin/claude-validate.ts",
+    "Write": "npx tsx bin/claude-validate.ts"
+  }
+}

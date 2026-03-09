@@ -1,0 +1,12 @@
+{
+  "proposal": "Test proposal",
+  "specs": "Test specs",
+  "design": "Test design",
+  "tasks": [
+    {
+      "id": "1",
+      "description": "Test task",
+      "status": "todo"
+    }
+  ]
+}
