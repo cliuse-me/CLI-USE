@@ -123,7 +123,7 @@ _\* `GOOGLE_API_KEYS` supports multiple keys separated by commas (e.g., `key1,ke
 **1. Install the package as a dev dependency**
 
 ```bash
-npm install --save-dev cli-use
+npm install --save-dev @cli-use/core
 ```
 
 **2. Initialize the Claude Code Plugin (Optional)**
@@ -131,5 +131,5 @@ npm install --save-dev cli-use
 If you are using Claude Code, you need to copy the plugin hooks and prompts into your project root:
 
 ```bash
-cp -r node_modules/cli-use/.claude-plugin .
+cp -r node_modules/@cli-use/core/.claude-plugin .
 ```
