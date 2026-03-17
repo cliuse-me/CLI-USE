@@ -1,6 +1,6 @@
 {
-  "$schema": "https://opencode.ai/config.json",
   "plugin": [
-    "../dist/index.js"
-  ]
+    "../opencode-plugin.ts"
+  ],
+  "$schema": "https://opencode.ai/config.json"
 }
