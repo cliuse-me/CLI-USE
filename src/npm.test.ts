@@ -4,7 +4,7 @@ import fs from 'fs-extra';
 describe('NPM Package Metadata', () => {
   it('has correct name and no bin field', async () => {
     const pkg = await fs.readJson('package.json');
-    expect(pkg.name).toBe('cli-use');
+    expect(pkg.name).toBe('@cli-use/core');
     expect(pkg.bin).toBeUndefined();
     expect(pkg.repository).toBe('git+https://github.com/cliuse-me/CLI-USE.git');
   });
