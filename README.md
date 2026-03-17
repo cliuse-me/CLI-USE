@@ -9,10 +9,43 @@ An Agentic Planning and TDD (Test-Driven Development) CLI adapter tool.
 **1. Install the package**
 
 ```bash
-npm i cli-use-core
+npm install cli-use-core
 ```
 
-**2. Initialize the Claude Code Plugin (Optional)**
+**2. Setup for OpenCode**
+
+Create an `opencode-plugin.ts` file in your project root to export the plugin:
+
+```typescript
+import { cliUseTddPlugin } from "cli-use-core/plugin";
+
+export default cliUseTddPlugin;
+```
+
+Then, create or update `.opencode/opencode.json` to load your local plugin file:
+
+```json
+{
+  "plugin": [
+    "../opencode-plugin.ts"
+  ]
+}
+```
+
+**3. Usage in OpenCode**
+
+Once configured, you can start using the dual-agent workflow in OpenCode:
+
+- **Plan your work:** Use the custom `/propose` command to trigger the planner agent to analyze requirements and generate an implementation plan.
+  ```bash
+  npx opencode run "/propose Add a new authentication system"
+  ```
+- **Implement the plan:** Use the custom `/implement` command to start the implementer agent, which will read the plan and execute it step-by-step.
+  ```bash
+  npx opencode run "/implement Let's start with task 1"
+  ```
+
+**4. Setup for Claude Code (Optional)**
 
 If you are using Claude Code, you need to copy the plugin hooks and prompts into your project root:
 
@@ -65,13 +98,19 @@ This project implements a dual-agent context across both **OpenCode** and **Clau
 The OpenCode adapter registers the `cli-use-planner` and `cli-use-implementer` agents programmatically, alongside custom `/propose` and `/implement` commands.
 
 1. **Configure OpenCode:**
-   Ensure your local OpenCode configuration (e.g., `opencode.config.ts`) imports and registers the built plugin:
+   Ensure you create an `opencode-plugin.ts` file in the root that exports the built plugin:
    ```typescript
    import { cliUseTddPlugin } from "./dist/opencode-plugin.js";
 
-   export default {
-     plugins: [cliUseTddPlugin],
-   };
+   export default cliUseTddPlugin;
+   ```
+   And then load it in `.opencode/opencode.json`:
+   ```json
+   {
+     "plugin": [
+       "../opencode-plugin.ts"
+     ]
+   }
    ```
 
 2. **Engage the Planner:**

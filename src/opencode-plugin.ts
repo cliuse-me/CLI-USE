@@ -24,6 +24,9 @@ export const cliUseTddPlugin: Plugin = async (_ctx) => {
         prompt: "You are the CLI Use Planner. Analyze requirements, read files, and design a comprehensive plan. When the plan is ready, save it using the `save_plan` tool. You cannot write code. Do not attempt to modify files directly.",
         permission: {
           edit: "deny" // Deny file-system mutations
+        },
+        tools: {
+          save_plan: true
         }
       };
       
