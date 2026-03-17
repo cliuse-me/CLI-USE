@@ -4,20 +4,26 @@ import process from 'process';
 console.log("Preparing for manual publish workflow...");
 console.log("Running prepublish scripts (build, typecheck, test)...");
 
-const prepublish = spawnSync('npm', ['run', 'prepublishOnly'], { stdio: 'inherit' });
+const npmPath = process.env.npm_execpath || 'npm';
+const command = npmPath.endsWith('.js') ? [process.execPath, npmPath] : [npmPath];
+
+const prepublish = spawnSync(command[0], [...command.slice(1), 'run', 'prepublishOnly'], { stdio: 'inherit' });
 if (prepublish.status !== 0) {
   console.error("Prepublish scripts failed. Aborting.");
   process.exit(1);
 }
 
-// We already bumped the version locally, so we don't need to do it again unless requested.
-// This handles retrying a failed publish.
+// Check if an OTP is passed in via arguments (e.g. node run-release.js 123456)
+const otp = process.argv[2];
+const publishArgs = ['publish'];
+if (otp) publishArgs.push('--otp=' + otp);
 
 console.log("Publishing to npm...");
-// Run npm publish directly so the user can be prompted for 2FA
-const publish = spawnSync('npm', ['publish'], { stdio: 'inherit' });
+const publish = spawnSync(command[0], [...command.slice(1), ...publishArgs], { stdio: 'inherit' });
 if (publish.status !== 0) {
-  console.error("Publish failed.");
+  console.error("\nPublish failed. If this is a Two-Factor Authentication (OTP) error, please run the release script with your 6-digit OTP code:");
+  console.error("npm run release -- <your-otp-code>");
+  console.error("\nExample: npm run release -- 123456");
   process.exit(1);
 }
 
