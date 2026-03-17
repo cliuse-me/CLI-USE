@@ -6,6 +6,14 @@ An Agentic Planning and TDD (Test-Driven Development) CLI adapter tool.
 
 ## 🚀 Installation & Setup
 
+**Prerequisites**
+
+This tool requires the OpenCode CLI. If you don't have it installed yet, install it globally via npm:
+
+```bash
+npm install -g @opencode-ai/cli
+```
+
 **1. Install the package**
 
 ```bash
@@ -27,6 +35,7 @@ Then, create or update `.opencode/opencode.json` to load your local plugin file 
 
 ```json
 {
+  "$schema": "https://opencode.ai/config.json",
   "plugin": [
     "../opencode-plugin.ts"
   ]
@@ -181,6 +190,7 @@ The OpenCode adapter registers the `cli-use-planner` and `cli-use-implementer` a
    And then load it in `.opencode/opencode.json` (see `opencode.example.json`):
    ```json
    {
+     "$schema": "https://opencode.ai/config.json",
      "plugin": [
        "../opencode-plugin.ts"
      ]
