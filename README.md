@@ -14,6 +14,7 @@ npm install cli-use-core
 
 **2. Setup for OpenCode**
 
+
 Create an `opencode-plugin.ts` file in your project root to export the plugin:
 
 ```typescript
@@ -62,8 +63,9 @@ npx opencode run "/implement start by writing the tests for task 1"
 ```
 *Result: The implementer strictly follows the `plan.json`, writes the tests first, implements the logic, and executes your project's test suite to ensure everything passes.*
 
-#### Workflow Diagram
+#### Visual Workflows
 
+**1. The Complete Lifecycle (Macro View)**
 ```mermaid
 graph TD
     A([User Idea / Intent]) -->|run /propose| B(🧠 Phase 1: Planner Agent)
@@ -97,6 +99,32 @@ graph TD
     
     style G fill:#2e7d32,stroke:#1b5e20,color:#fff
     style H fill:#1565c0,stroke:#0d47a1,color:#fff
+```
+
+**2. The CLI Interaction Sequence (Micro View)**
+```mermaid
+sequenceDiagram
+    actor User
+    participant CLI as OpenCode CLI
+    participant Planner as Planner Agent
+    participant FS as File System
+    participant Impl as Implementer Agent
+
+    Note over User, Impl: Phase 1: Architecture & Planning
+    User->>CLI: run "/propose <idea>"
+    CLI->>Planner: Trigger /propose command
+    Planner->>Planner: Analyze Codebase & Requirements
+    Planner->>FS: 💾 Call `save_plan` tool
+    FS-->>User: plan.json saved!
+
+    Note over User, Impl: Phase 2: Test-Driven Implementation (New Session)
+    User->>CLI: run "/implement <instructions>"
+    CLI->>Impl: Trigger /implement command
+    FS-->>Impl: 📖 Auto-inject plan.json context
+    Impl->>Impl: Write Tests (TDD)
+    Impl->>Impl: Write Implementation Code
+    Impl->>Impl: Run Tests & Verify
+    Impl-->>User: Task completed successfully!
 ```
 
 ---
