@@ -73,6 +73,28 @@ cp -r node_modules/cli-use-core/.claude-plugin .
 
 </details>
 
+## 📚 Command Catalog
+
+This tool injects custom commands into your OpenCode / Claude Code environments, as well as providing its own CLI utilities.
+
+### Agent Commands (OpenCode / Claude Code)
+
+These commands switch contexts and engage the specialized AI agents.
+
+| Command      | Arguments                       | Description                                                                                                                                                        |
+| :----------- | :------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/propose`   | `<idea or feature description>` | Switches to the **Planner Agent**. Analyzes your request, reads the codebase (read-only), and generates a strict TDD architecture plan using the `save_plan` tool. |
+| `/implement` | `[optional instructions]`       | Switches to the **Implementer Agent**. Automatically reads the latest saved plan and begins writing tests and implementation code to fulfill it.                   |
+
+### CLI Utilities
+
+These commands are run in your standard terminal to manage the tool's installation in your project.
+
+| Command                   | Arguments                     | Description                                                                                                              |
+| :------------------------ | :---------------------------- | :----------------------------------------------------------------------------------------------------------------------- |
+| `npx cli-use-core init`   | `<opencode \| claude \| all>` | Bootstraps the required configuration files and plugin paths for the specified platform(s) into your current repository. |
+| `npx cli-use-core remove` | `<opencode \| claude \| all>` | Safely removes the generated plugin configurations and directories from your project.                                    |
+
 ---
 
 ## 🧠 The Dual-Agent Workflow (Idea to Implementation)
