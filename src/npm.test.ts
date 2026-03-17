@@ -6,7 +6,7 @@ describe("NPM Package Metadata", () => {
     const pkg = await fs.readJson("package.json");
     // Accept both local (cli-use-core) and GitHub Actions dynamically re-written name (@cliuse-me/cli-use-core)
     expect(["cli-use-core", "@cliuse-me/cli-use-core"]).toContain(pkg.name);
-    expect(pkg.bin["cli-use-core"]).toBe("./dist/cli.js");
+    expect(pkg.bin["cli-use-core"]).toBe("dist/cli.js");
     expect(pkg.repository.url).toBe("git+https://github.com/cliuse-me/CLI-USE.git");
   });
 
