@@ -13,10 +13,12 @@ if (prepublish.status !== 0) {
   process.exit(1);
 }
 
-// Check if an OTP is passed in via arguments (e.g. node run-release.js 123456)
-const otp = process.argv[2];
+// Extract OTP directly from the user's invocation if provided
+const args = process.argv.slice(2);
 const publishArgs = ['publish'];
-if (otp) publishArgs.push('--otp=' + otp);
+if (args.length > 0) {
+  publishArgs.push('--otp=' + args[0]);
+}
 
 console.log("Publishing to npm...");
 const publish = spawnSync(command[0], [...command.slice(1), ...publishArgs], { stdio: 'inherit' });
