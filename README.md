@@ -32,7 +32,7 @@ Then, create or update `.opencode/opencode.json` to load your local plugin file 
 }
 ```
 
-**3. The Dual-Agent Workflow (Idea to Implementation)**
+## 🧠 The Dual-Agent Workflow (Idea to Implementation)
 
 This tool separates the *thinking* from the *doing*. Instead of a single AI trying to design and code simultaneously (which often leads to hallucinations), we use a strict two-step pipeline.
 
@@ -45,7 +45,7 @@ npx opencode run "/propose Add a new authentication system with JWT"
 *Result: The planner uses the `save_plan` tool to generate a detailed spec and task list, saving it locally to `cli-use/changes/latest/plan.json`.*
 
 **Phase 2: Test-Driven Implementation**
-Once the plan is saved, you switch to the **Implementer Agent** to execute it. The implementer automatically reads the plan generated in Phase 1 and begins coding step-by-step.
+Once the plan is saved, you switch to the **Implementer Agent** to execute it in a new session. The implementer automatically reads the plan generated in Phase 1 and begins coding step-by-step.
 
 ```bash
 npx opencode run "/implement start by writing the tests for task 1"
@@ -58,9 +58,9 @@ npx opencode run "/implement start by writing the tests for task 1"
 sequenceDiagram
     actor User
     participant CLI as OpenCode CLI
-    participant Planner as 🧠 Planner Agent
-    participant FS as 📂 cli-use/changes/...
-    participant Impl as 🛠️ Implementer Agent
+    participant Planner as Planner Agent
+    participant FS as File System
+    participant Impl as Implementer Agent
 
     Note over User, Impl: Phase 1: Architecture & Planning
     User->>CLI: run "/propose <idea>"
@@ -69,7 +69,7 @@ sequenceDiagram
     Planner->>FS: 💾 Call `save_plan` tool
     FS-->>User: plan.json saved!
 
-    Note over User, Impl: Phase 2: Test-Driven Implementation
+    Note over User, Impl: Phase 2: Test-Driven Implementation (New Session)
     User->>CLI: run "/implement <instructions>"
     CLI->>Impl: Trigger /implement command
     FS-->>Impl: 📖 Auto-inject plan.json context
@@ -79,7 +79,7 @@ sequenceDiagram
     Impl-->>User: Task completed successfully!
 ```
 
-**4. Setup for Claude Code (Optional)**
+**3. Setup for Claude Code (Optional)**
 
 If you are using Claude Code, you need to copy the plugin hooks and prompts into your project root:
 
