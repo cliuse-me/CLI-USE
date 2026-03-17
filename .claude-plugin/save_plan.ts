@@ -1,4 +1,4 @@
-import { savePlan } from '../src/core/db.ts';
+import { savePlan } from '../src/core/db.js';
 import { z } from 'zod';
 
 /**
