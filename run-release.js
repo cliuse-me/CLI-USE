@@ -15,7 +15,7 @@ if (prepublish.status !== 0) {
 
 // Extract OTP directly from the user's invocation if provided
 const args = process.argv.slice(2);
-const publishArgs = ['publish'];
+const publishArgs = ['publish', '--access', 'public'];
 if (args.length > 0) {
   publishArgs.push('--otp=' + args[0]);
 }
