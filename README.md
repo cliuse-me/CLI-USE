@@ -22,7 +22,7 @@ import { cliUseTddPlugin } from "cli-use-core/plugin";
 export default cliUseTddPlugin;
 ```
 
-Then, create or update `.opencode/opencode.json` to load your local plugin file:
+Then, create or update `.opencode/opencode.json` to load your local plugin file (you can copy the `opencode.example.json` from this repository as a reference):
 
 ```json
 {
@@ -104,7 +104,7 @@ The OpenCode adapter registers the `cli-use-planner` and `cli-use-implementer` a
 
    export default cliUseTddPlugin;
    ```
-   And then load it in `.opencode/opencode.json`:
+   And then load it in `.opencode/opencode.json` (see `opencode.example.json`):
    ```json
    {
      "plugin": [

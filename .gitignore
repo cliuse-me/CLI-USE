@@ -17,7 +17,8 @@ trading.db
 # cli-use-tdd Specific Local State
 cli-use/changes/
 bun.lockb
-.opencode/
+.opencode/*
+!.opencode/opencode.json
 AGENTS.md
 LLM_TRACER_TASKS.md
 TODO.md
