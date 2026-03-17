@@ -103,7 +103,7 @@ For each task, you MUST create the specified `.test.ts` file exactly with the pr
     ```
   * **Verification Command:** `npx vitest run src/opencode/index.test.ts`
 
-- [ ] **Task 4: Claude Code Manifests**
+- [x] **Task 4: Claude Code Manifests**
   * **Agent:** `/adapter`
   * **Worktree:** `/Users/arthursantos/Desktop/OpenSpec/CLI-USE-SKILLS/`
   * **Action:** Create `.claude-plugin/commands/propose.md` and `implement.md`.
@@ -121,7 +121,7 @@ For each task, you MUST create the specified `.test.ts` file exactly with the pr
     ```
   * **Verification Command:** `npx vitest run src/claude/commands.test.ts`
 
-- [ ] **Task 5: Claude Code Persona Definitions**
+- [x] **Task 5: Claude Code Persona Definitions**
   * **Agent:** `/adapter`
   * **Worktree:** `/Users/arthursantos/Desktop/OpenSpec/CLI-USE-SKILLS/`
   * **Action:** Create `.claude-plugin/agents/planner.md` and `implementer.md`.
@@ -138,7 +138,7 @@ For each task, you MUST create the specified `.test.ts` file exactly with the pr
 
 ### Phase 2: State Injection (The Context Builder)
 
-- [ ] **Task 1: Core State Retrieval**
+- [x] **Task 1: Core State Retrieval**
   * **Agent:** `/architect`
   * **Worktree:** `/Users/arthursantos/Desktop/OpenSpec/CLI-USE-SKILLS/`
   * **Action:** Create `src/core/state.ts`. Implement `getPlanState(featureName)` reading JSON from disk.
@@ -159,7 +159,7 @@ For each task, you MUST create the specified `.test.ts` file exactly with the pr
     ```
   * **Verification Command:** `npx vitest run src/core/state.test.ts`
 
-- [ ] **Task 2: OpenCode Context Injection**
+- [x] **Task 2: OpenCode Context Injection**
   * **Agent:** `/adapter`
   * **Worktree:** `/Users/arthursantos/Desktop/OpenSpec/CLI-USE-SKILLS/`
   * **Action:** Implement `chat.params` hook in `index.ts`. Inject result of `getPlanState` into `output.system`.
@@ -177,7 +177,7 @@ For each task, you MUST create the specified `.test.ts` file exactly with the pr
 
 ### Phase 3: The Silent Guardian (Stateless Validation)
 
-- [ ] **Task 1: Core Validation Engine**
+- [x] **Task 1: Core Validation Engine**
   * **Agent:** `/architect`
   * **Worktree:** `/Users/arthursantos/Desktop/OpenSpec/CLI-USE-SKILLS/`
   * **Action:** Create `src/core/validator.ts`. Pure function `validateCode(code)` checking for `console.log`.
@@ -196,7 +196,7 @@ For each task, you MUST create the specified `.test.ts` file exactly with the pr
     ```
   * **Verification Command:** `npx vitest run src/core/validator.test.ts`
 
-- [ ] **Task 2: OpenCode Background Validation**
+- [x] **Task 2: OpenCode Background Validation**
   * **Agent:** `/adapter`
   * **Worktree:** `/Users/arthursantos/Desktop/OpenSpec/CLI-USE-SKILLS/`
   * **Action:** Implement `tool.execute.after`. Intercept `Edit/Write`, run validator, and throw Error if failed.
@@ -210,3 +210,68 @@ For each task, you MUST create the specified `.test.ts` file exactly with the pr
     });
     ```
   * **Verification Command:** `npx vitest run src/opencode/index.test.ts`
+
+### Phase 4: NPM Publishing Preparation
+
+- [ ] **Task 1: Package Metadata Updates**
+  * **Agent:** `/adapter`
+  * **Worktree:** `/Users/arthursantos/Desktop/cli-use-tdd/`
+  * **Action:** Update `package.json` with `"name": "cli-use"`, remove `"bin"`, add `"repository": "git+https://github.com/cliuse-me/CLI-USE.git"`, and add metadata (`description`, `author`, `license`, `keywords`).
+  * **Test Requirement:** Create `src/npm.test.ts`:
+    ```typescript
+    import { describe, it, expect } from 'vitest';
+    import fs from 'fs-extra';
+    describe('NPM Package Metadata', () => {
+      it('has correct name and no bin field', async () => {
+        const pkg = await fs.readJson('package.json');
+        expect(pkg.name).toBe('cli-use');
+        expect(pkg.bin).toBeUndefined();
+        expect(pkg.repository).toBe('git+https://github.com/cliuse-me/CLI-USE.git');
+      });
+    });
+    ```
+  * **Verification Command:** `npx vitest run src/npm.test.ts`
+
+- [ ] **Task 2: Build & Distribution Whitelist**
+  * **Agent:** `/adapter`
+  * **Worktree:** `/Users/arthursantos/Desktop/cli-use-tdd/`
+  * **Action:** Update `package.json` to include `"files": ["dist", ".claude-plugin"]`.
+  * **Test Requirement:** Append to `src/npm.test.ts`:
+    ```typescript
+    it('has correct files whitelist', async () => {
+      const pkg = await fs.readJson('package.json');
+      expect(pkg.files).toContain('dist');
+      expect(pkg.files).toContain('.claude-plugin');
+    });
+    ```
+  * **Verification Command:** `npx vitest run src/npm.test.ts`
+
+- [ ] **Task 3: Claude Code Standalone Compilation**
+  * **Agent:** `/adapter`
+  * **Worktree:** `/Users/arthursantos/Desktop/cli-use-tdd/`
+  * **Action:** Update `build` script in `package.json` to include `bin/claude-validate.ts`. Update `.claude-plugin/hooks.json` to use `node dist/claude-validate.js`.
+  * **Test Requirement:** Append to `src/npm.test.ts`:
+    ```typescript
+    it('compiles validate script and uses it in hooks', async () => {
+      const pkg = await fs.readJson('package.json');
+      expect(pkg.scripts.build).toContain('bin/claude-validate.ts');
+      const hooks = await fs.readJson('.claude-plugin/hooks.json');
+      expect(hooks.PreToolUse.Edit).toContain('node dist/claude-validate.js');
+    });
+    ```
+  * **Verification Command:** `npx vitest run src/npm.test.ts`
+
+- [ ] **Task 4: Release Automation (`np`)**
+  * **Agent:** `/adapter`
+  * **Worktree:** `/Users/arthursantos/Desktop/cli-use-tdd/`
+  * **Action:** Install `np` as dev dependency. Add `"release": "np"` and `"prepublishOnly": "npm run build && npm run typecheck && npm run test"` to scripts.
+  * **Test Requirement:** Append to `src/npm.test.ts`:
+    ```typescript
+    it('has np release automation configured', async () => {
+      const pkg = await fs.readJson('package.json');
+      expect(pkg.devDependencies.np).toBeDefined();
+      expect(pkg.scripts.release).toBe('np');
+      expect(pkg.scripts.prepublishOnly).toContain('npm run build');
+    });
+    ```
+  * **Verification Command:** `npx vitest run src/npm.test.ts`

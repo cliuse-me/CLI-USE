@@ -43,20 +43,28 @@ The absolute source of truth for the project phase, stored at `cli-use/changes/<
 - [x] Create `src/engine/` containing pure TypeScript logic.
 - [ ] Implement `dag.ts`: The State Resolver calculating available next steps based on file system presence.
 - [ ] Implement `merger.ts`: Parses delta Markdown specs and merges them into the `plan.json`.
-- [ ] Implement `validator.ts`: Ensures output matches the required `plan.json` schema and architecture constraints.
+- [x] Implement `validator.ts`: Ensures output matches the required `plan.json` schema and architecture constraints.
 - *Constraint Check:* Ensure NO framework-specific SDKs are imported in this tier.
 
 ### Phase 2: Build the OpenCode Adapter (Tier 2)
 - [x] Create `src/opencode/index.ts`.
 - [x] Register `openspec-planner` and `cli-use-implementer` agents via OpenCode native config.
-- [ ] Implement `chat.params` hook to inject the current DAG state into the LLM context (forcing phase adherence).
-- [ ] Expose `save_plan` as a native async tool using Zod validation.
-- [ ] Implement `tool.execute.after` hook to silently run `validator.ts` on file saves, intercepting and rejecting invalid AI code edits.
+- [x] Implement `chat.params` hook to inject the current DAG state into the LLM context (forcing phase adherence).
+- [x] Expose `save_plan` as a native async tool using Zod validation.
+- [x] Implement `tool.execute.after` hook to silently run `validator.ts` on file saves, intercepting and rejecting invalid AI code edits.
 
 ### Phase 3: Build the Claude Code Adapter (Tier 3)
-- [ ] Create `.claude-plugin/` configuration.
-- [ ] Create Static Markdown Agent Definitions (`agents/*.md`) and Commands (`commands/*.md`).
-- [ ] Write `SKILL.md` wrappers granting Bash execution permission to invoke core scripts.
-- [ ] Create lightweight Node CLI wrappers (`bin/claude-validate.js`) for `hooks.json` that read from `stdin`.
-- [ ] Configure `PreToolUse`/`PostToolUse` shell scripts to block invalid AI actions via standard exit codes (e.g., exiting with `2` if AI acts prematurely).
+- [x] Create `.claude-plugin/` configuration.
+- [x] Create Static Markdown Agent Definitions (`agents/*.md`) and Commands (`commands/*.md`).
+- [x] Write `SKILL.md` wrappers granting Bash execution permission to invoke core scripts.
+- [x] Create lightweight Node CLI wrappers (`bin/claude-validate.js`) for `hooks.json` that read from `stdin`.
+- [x] Configure `PreToolUse`/`PostToolUse` shell scripts to block invalid AI actions via standard exit codes (e.g., exiting with `2` if AI acts prematurely).
 
+
+### Phase 4: NPM Publishing Preparation
+- [x] Update `package.json` with `"name": "cli-use"`, remove `"bin"`, and add `repository`, `description`, `author`, `license`, `keywords`.
+- [x] Add `"files": ["dist", ".claude-plugin"]` to `package.json` to whitelist distribution files.
+- [x] Update build script in `package.json` to compile `bin/claude-validate.ts` into plain JavaScript at `dist/claude-validate.js`.
+- [x] Update `.claude-plugin/hooks.json` to execute `node dist/claude-validate.js`.
+- [x] Install `np` as a development dependency.
+- [x] Add `"release": "np"` and `"prepublishOnly": "npm run build && npm run typecheck && npm run test"` to scripts in `package.json`.

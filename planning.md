@@ -72,13 +72,13 @@ For each task, you MUST create the specified `.test.ts` file exactly with the pr
   * **Action:** Add `/propose` and `/implement` commands to `config.command`.
   * **Verification Command:** `npx vitest run src/opencode/index.test.ts` (Asserting command to agent mapping).
 
-- [ ] **Task 4: Claude Code Manifests**
+- [x] **Task 4: Claude Code Manifests**
   * **Agent:** `/adapter`
   * **Worktree:** `/Users/arthursantos/Desktop/OpenSpec/CLI-USE-SKILLS/`
   * **Action:** Create `.claude-plugin/commands/propose.md` and `implement.md`.
   * **Verification Command:** `ls .claude-plugin/commands/*.md`
 
-- [ ] **Task 5: Claude Code Persona Definitions**
+- [x] **Task 5: Claude Code Persona Definitions**
   * **Agent:** `/adapter`
   * **Worktree:** `/Users/arthursantos/Desktop/OpenSpec/CLI-USE-SKILLS/`
   * **Action:** Create `.claude-plugin/agents/planner.md` and `implementer.md`.
@@ -86,13 +86,13 @@ For each task, you MUST create the specified `.test.ts` file exactly with the pr
 
 ### Phase 2: State Injection (The Context Builder)
 
-- [ ] **Task 1: Core State Retrieval**
+- [x] **Task 1: Core State Retrieval**
   * **Agent:** `/architect`
   * **Worktree:** `/Users/arthursantos/Desktop/OpenSpec/CLI-USE-SKILLS/`
   * **Action:** Create `src/core/state.ts`. Implement `getPlanState(featureName)` reading JSON from disk.
   * **Verification Command:** `npx vitest run src/core/state.test.ts`
 
-- [ ] **Task 2: OpenCode Context Injection**
+- [x] **Task 2: OpenCode Context Injection**
   * **Agent:** `/adapter`
   * **Worktree:** `/Users/arthursantos/Desktop/OpenSpec/CLI-USE-SKILLS/`
   * **Action:** Implement `chat.params` hook in `index.ts`. Inject result of `getPlanState` into `output.system`.
@@ -100,13 +100,13 @@ For each task, you MUST create the specified `.test.ts` file exactly with the pr
 
 ### Phase 3: The Silent Guardian (Stateless Validation)
 
-- [ ] **Task 1: Core Validation Engine**
+- [x] **Task 1: Core Validation Engine**
   * **Agent:** `/architect`
   * **Worktree:** `/Users/arthursantos/Desktop/OpenSpec/CLI-USE-SKILLS/`
   * **Action:** Create `src/core/validator.ts`. Pure function `validateCode(code)` checking for `console.log`.
   * **Verification Command:** `npx vitest run src/core/validator.test.ts`
 
-- [ ] **Task 2: OpenCode Background Validation**
+- [x] **Task 2: OpenCode Background Validation**
   * **Agent:** `/adapter`
   * **Worktree:** `/Users/arthursantos/Desktop/OpenSpec/CLI-USE-SKILLS/`
   * **Action:** Implement `tool.execute.after`. Intercept `Edit/Write`, run validator, and throw Error if failed.
