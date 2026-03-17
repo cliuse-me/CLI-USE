@@ -1,6 +1,6 @@
 {
   "name": "cli-use-core",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "AI-powered CLI adapter tool",
   "keywords": [
     "adapter",
@@ -18,7 +18,7 @@
     "url": "git+https://github.com/cliuse-me/CLI-USE.git"
   },
   "bin": {
-    "cli-use-core": "./dist/cli.js"
+    "cli-use-core": "dist/cli.js"
   },
   "files": [
     "dist",
