@@ -65,28 +65,38 @@ npx opencode run "/implement start by writing the tests for task 1"
 #### Workflow Diagram
 
 ```mermaid
-sequenceDiagram
-    actor User
-    participant CLI as OpenCode CLI
-    participant Planner as Planner Agent
-    participant FS as File System
-    participant Impl as Implementer Agent
+graph TD
+    A([User Idea / Intent]) -->|run /propose| B(🧠 Phase 1: Planner Agent)
+    
+    subgraph First Session: Architecture & Planning
+        B --> C{Clear Intent?}
+        C -->|No| D[Ask User for Clarification]
+        D --> B
+        C -->|Yes| E[Analyze Codebase]
+        E --> F[Generate Spec & Tasks]
+        F --> G[💾 Save plan.json]
+    end
 
-    Note over User, Impl: Phase 1: Architecture & Planning
-    User->>CLI: run "/propose <idea>"
-    CLI->>Planner: Trigger /propose command
-    Planner->>Planner: Analyze Codebase & Requirements
-    Planner->>FS: 💾 Call `save_plan` tool
-    FS-->>User: plan.json saved!
+    G -->|run /implement| H(🛠️ Phase 2: Implementer Agent)
+    
+    subgraph Second Session: Test-Driven Execution
+        H --> I[📖 Auto-load plan.json]
+        I --> J[Write Tests TDD]
+        J --> K[Write Implementation Code]
+        K --> L{Tests Pass?}
+        L -->|No - Diagnose| K
+        L -->|Yes| M[Run Linters/Checks]
+        M --> N{Checks Pass?}
+        N -->|No| K
+        N -->|Yes| O[Task Complete]
+    end
 
-    Note over User, Impl: Phase 2: Test-Driven Implementation (New Session)
-    User->>CLI: run "/implement <instructions>"
-    CLI->>Impl: Trigger /implement command
-    FS-->>Impl: 📖 Auto-inject plan.json context
-    Impl->>Impl: Write Tests (TDD)
-    Impl->>Impl: Write Implementation Code
-    Impl->>Impl: Run Tests & Verify
-    Impl-->>User: Task completed successfully!
+    O --> P([Human Review])
+    P -->|Needs Fixes| H
+    P -->|Approved| Q([Merge & Deploy])
+    
+    style G fill:#2e7d32,stroke:#1b5e20,color:#fff
+    style H fill:#1565c0,stroke:#0d47a1,color:#fff
 ```
 
 ---
