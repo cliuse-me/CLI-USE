@@ -13,3 +13,13 @@ trading-db.json
 trading.db
 *.tmp
 .npmrc
+
+# cli-use-tdd Specific Local State
+cli-use/changes/
+bun.lockb
+.opencode/
+AGENTS.md
+LLM_TRACER_TASKS.md
+TODO.md
+TODO_TRACER_BULLETS.md
+planning.md
