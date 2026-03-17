@@ -10,14 +10,11 @@ if (prepublish.status !== 0) {
   process.exit(1);
 }
 
-console.log("Scripts passed. Bumping patch version...");
-const version = spawnSync('npm', ['version', 'patch'], { stdio: 'inherit' });
-if (version.status !== 0) {
-  console.error("Version bump failed. Aborting.");
-  process.exit(1);
-}
+// We already bumped the version locally, so we don't need to do it again unless requested.
+// This handles retrying a failed publish.
 
 console.log("Publishing to npm...");
+// Run npm publish directly so the user can be prompted for 2FA
 const publish = spawnSync('npm', ['publish'], { stdio: 'inherit' });
 if (publish.status !== 0) {
   console.error("Publish failed.");
