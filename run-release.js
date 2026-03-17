@@ -1,5 +1,6 @@
 import { spawnSync } from 'child_process';
 import process from 'process';
+import fs from 'fs';
 
 console.log("Preparing for manual publish workflow...");
 console.log("Running prepublish scripts (build, typecheck, test)...");
@@ -30,6 +31,25 @@ if (publish.status !== 0) {
 }
 
 console.log("Pushing git tags to remote...");
-spawnSync('git', ['push', '--follow-tags'], { stdio: 'inherit' });
+const pushTags = spawnSync('git', ['push', '--follow-tags'], { stdio: 'inherit' });
+if (pushTags.status !== 0) {
+  console.error("Failed to push tags.");
+  process.exit(1);
+}
+
+// Create a GitHub Release so the Action gets triggered to publish to GitHub Packages
+console.log("Creating GitHub Release...");
+const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+const versionTag = `v${pkg.version}`;
+
+// We use --generate-notes to auto-populate the description with recent PRs/commits
+const ghRelease = spawnSync('gh', ['release', 'create', versionTag, '--title', `Release ${versionTag}`, '--generate-notes'], { stdio: 'inherit' });
+
+if (ghRelease.status !== 0) {
+  console.warn("\n⚠️  Failed to create GitHub Release automatically.");
+  console.warn("You may need to log into the 'gh' CLI or create the release manually on GitHub to trigger the GitHub Packages publish.");
+} else {
+  console.log(`\n✅ GitHub Release ${versionTag} created successfully! GitHub Actions will now publish to GitHub Packages.`);
+}
 
 console.log("Release complete!");
