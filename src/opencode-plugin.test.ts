@@ -1,22 +1,22 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from "vitest";
 
-vi.mock('@opencode-ai/plugin', () => ({
+vi.mock("@opencode-ai/plugin", () => ({
   tool: (config: any) => config,
-  Plugin: {}
+  Plugin: {},
 }));
 
-import { cliUsePlugin } from './opencode-plugin.js';
-import * as db from './core/db.js';
-import * as state from './core/state.js';
+import { cliUsePlugin } from "./opencode-plugin.js";
+import * as db from "./core/db.js";
+import * as state from "./core/state.js";
 
-vi.mock('./core/db.js');
-vi.mock('./core/state.js');
+vi.mock("./core/db.js");
+vi.mock("./core/state.js");
 
-describe('cliUsePlugin', () => {
-  it('returns a config with required agents and a save_plan tool', async () => {
+describe("cliUsePlugin", () => {
+  it("returns a config with required agents and a save_plan tool", async () => {
     // @ts-ignore
     const hooks = await cliUsePlugin({});
-    
+
     expect(hooks.config).toBeDefined();
     expect(hooks.tool).toBeDefined();
     expect(hooks.tool?.save_plan).toBeDefined();
@@ -26,122 +26,126 @@ describe('cliUsePlugin', () => {
     if (hooks.config) {
       await hooks.config(cfg as any);
     }
-    
+
     // Check agents
     const agents = (cfg as any).agent;
-    expect(agents['cli-use-planner']).toBeDefined();
-    expect(agents['cli-use-planner'].permission?.edit).toBe('deny');
-    expect(agents['cli-use-implementer']).toBeDefined();
+    expect(agents["cli-use-planner"]).toBeDefined();
+    expect(agents["cli-use-planner"].permission?.edit).toBe("deny");
+    expect(agents["cli-use-implementer"]).toBeDefined();
 
     // Test tool
     const savePlanArgs = {
       proposal: "test proposal",
       specs: "test specs",
       design: "test design",
-      tasks: [{ id: "1", description: "test task", status: "pending" }]
+      tasks: [{ id: "1", description: "test task", status: "pending" }],
     };
-    
+
     if (hooks.tool?.save_plan) {
       // @ts-ignore
       await hooks.tool.save_plan.execute(savePlanArgs, {} as any);
-      expect(db.savePlan).toHaveBeenCalledWith('latest', savePlanArgs);
+      expect(db.savePlan).toHaveBeenCalledWith("latest", savePlanArgs);
     }
   });
 
-  it('injects plan state into system prompt for cli-use-implementer', async () => {
+  it("injects plan state into system prompt for cli-use-implementer", async () => {
     // @ts-ignore
     const hooks = await cliUsePlugin({});
-    expect(hooks['chat.params']).toBeDefined();
+    expect(hooks["chat.params"]).toBeDefined();
 
     const planState = {
       proposal: "prop",
       specs: "spec",
       design: "des",
-      tasks: []
+      tasks: [],
     };
     vi.mocked(state.getPlanState).mockResolvedValue(planState);
 
     const output: any = { system: "Original system." };
-    
-    // @ts-ignore
-    await hooks['chat.params']({}, output, { activeAgentId: 'cli-use-implementer' });
 
-    expect(state.getPlanState).toHaveBeenCalledWith('latest');
-    expect(output.system).toContain('Original system.');
-    expect(output.system).toContain('Latest Plan:');
+    // @ts-ignore
+    await hooks["chat.params"]({}, output, { activeAgentId: "cli-use-implementer" });
+
+    expect(state.getPlanState).toHaveBeenCalledWith("latest");
+    expect(output.system).toContain("Original system.");
+    expect(output.system).toContain("Latest Plan:");
     expect(output.system).toContain('"proposal": "prop"');
 
     const outputUndefined: any = {};
     // @ts-ignore
-    await hooks['chat.params']({}, outputUndefined, { activeAgentId: 'cli-use-implementer' });
-    expect(outputUndefined.system).toContain('Latest Plan:');
+    await hooks["chat.params"]({}, outputUndefined, { activeAgentId: "cli-use-implementer" });
+    expect(outputUndefined.system).toContain("Latest Plan:");
   });
 
-  it('does not inject plan state for other agents', async () => {
+  it("does not inject plan state for other agents", async () => {
     // @ts-ignore
     const hooks = await cliUsePlugin({});
-    
+
     vi.mocked(state.getPlanState).mockResolvedValue(null);
-    
+
     const output: any = { system: "Original system." };
-    
+
     // @ts-ignore
-    await hooks['chat.params']({}, output, { activeAgentId: 'cli-use-planner' });
+    await hooks["chat.params"]({}, output, { activeAgentId: "cli-use-planner" });
 
     expect(output.system).toBe("Original system.");
   });
 
-  it('throws an Error if edit tool provides invalid code', async () => {
+  it("throws an Error if edit tool provides invalid code", async () => {
     // @ts-ignore
     const hooks = await cliUsePlugin({});
-    expect(hooks['tool.execute.after']).toBeDefined();
+    expect(hooks["tool.execute.after"]).toBeDefined();
 
     const editInputInvalid = {
-      tool: 'edit',
-      args: { newString: 'console.log("hello");' }
+      tool: "edit",
+      args: { newString: 'console.log("hello");' },
     };
 
     // @ts-ignore
-    await expect(hooks['tool.execute.after'](editInputInvalid)).rejects.toThrow('Code validation failed: console.log is not allowed');
+    await expect(hooks["tool.execute.after"](editInputInvalid)).rejects.toThrow(
+      "Code validation failed: console.log is not allowed",
+    );
 
     const editInputValid = {
-      tool: 'edit',
-      args: { newString: 'const a = 1;' }
+      tool: "edit",
+      args: { newString: "const a = 1;" },
     };
     // @ts-ignore
-    await expect(hooks['tool.execute.after'](editInputValid)).resolves.toBeUndefined();
+    await expect(hooks["tool.execute.after"](editInputValid)).resolves.toBeUndefined();
   });
 
-  it('throws an Error if write tool provides invalid code', async () => {
+  it("throws an Error if write tool provides invalid code", async () => {
     // @ts-ignore
     const hooks = await cliUsePlugin({});
-    
+
     const writeInputInvalid = {
-      tool: 'write',
-      args: { content: 'console.log("world");' }
+      tool: "write",
+      args: { content: 'console.log("world");' },
     };
 
     // @ts-ignore
-    await expect(hooks['tool.execute.after'](writeInputInvalid)).rejects.toThrow('Code validation failed: console.log is not allowed');
+    await expect(hooks["tool.execute.after"](writeInputInvalid)).rejects.toThrow(
+      "Code validation failed: console.log is not allowed",
+    );
 
     const writeInputValid = {
-      tool: 'write',
-      args: { content: 'const b = 2;' }
+      tool: "write",
+      args: { content: "const b = 2;" },
     };
     // @ts-ignore
-    await expect(hooks['tool.execute.after'](writeInputValid)).resolves.toBeUndefined();
+    await expect(hooks["tool.execute.after"](writeInputValid)).resolves.toBeUndefined();
   });
 
-  it('does not validate code for other tools', async () => {
+  it("does not validate code for other tools", async () => {
     // @ts-ignore
     const hooks = await cliUsePlugin({});
-    
+
     const otherToolInput = {
-      tool: 'other',
-      args: { someArg: 'console.log("not checked");' }
+      tool: "other",
+      args: { someArg: 'console.log("not checked");' },
     };
 
     // @ts-ignore
-    await expect(hooks['tool.execute.after'](otherToolInput)).resolves.toBeUndefined();
+    await expect(hooks["tool.execute.after"](otherToolInput)).resolves.toBeUndefined();
   });
 });

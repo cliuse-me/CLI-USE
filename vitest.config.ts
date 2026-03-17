@@ -1,13 +1,13 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
     deps: {
       optimizer: {
         web: {
-          include: ['@opencode-ai/plugin']
-        }
-      }
-    }
-  }
+          include: ["@opencode-ai/plugin"],
+        },
+      },
+    },
+  },
 });

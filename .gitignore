@@ -17,6 +17,8 @@ trading.db
 # cli-use-tdd Specific Local State
 cli-use/changes/
 bun.lockb
+.test-cli-dir
+test-pack-env
 .opencode/*
 !.opencode/opencode.json
 AGENTS.md

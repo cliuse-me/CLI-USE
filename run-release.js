@@ -1,14 +1,16 @@
-import { spawnSync } from 'child_process';
-import process from 'process';
-import fs from 'fs';
+import { spawnSync } from "child_process";
+import process from "process";
+import fs from "fs";
 
 console.log("Preparing for manual publish workflow...");
 console.log("Running prepublish scripts (build, typecheck, test)...");
 
-const npmPath = process.env.npm_execpath || 'npm';
-const command = npmPath.endsWith('.js') ? [process.execPath, npmPath] : [npmPath];
+const npmPath = process.env.npm_execpath || "npm";
+const command = npmPath.endsWith(".js") ? [process.execPath, npmPath] : [npmPath];
 
-const prepublish = spawnSync(command[0], [...command.slice(1), 'run', 'prepublishOnly'], { stdio: 'inherit' });
+const prepublish = spawnSync(command[0], [...command.slice(1), "run", "prepublishOnly"], {
+  stdio: "inherit",
+});
 if (prepublish.status !== 0) {
   console.error("Prepublish scripts failed. Aborting.");
   process.exit(1);
@@ -16,22 +18,24 @@ if (prepublish.status !== 0) {
 
 // Extract OTP directly from the user's invocation if provided
 const args = process.argv.slice(2);
-const publishArgs = ['publish', '--access', 'public'];
+const publishArgs = ["publish", "--access", "public"];
 if (args.length > 0) {
-  publishArgs.push('--otp=' + args[0]);
+  publishArgs.push("--otp=" + args[0]);
 }
 
 console.log("Publishing to npm...");
-const publish = spawnSync(command[0], [...command.slice(1), ...publishArgs], { stdio: 'inherit' });
+const publish = spawnSync(command[0], [...command.slice(1), ...publishArgs], { stdio: "inherit" });
 if (publish.status !== 0) {
-  console.error("\nPublish failed. If this is a Two-Factor Authentication (OTP) error, please run the release script with your 6-digit OTP code:");
+  console.error(
+    "\nPublish failed. If this is a Two-Factor Authentication (OTP) error, please run the release script with your 6-digit OTP code:",
+  );
   console.error("npm run release -- <your-otp-code>");
   console.error("\nExample: npm run release -- 123456");
   process.exit(1);
 }
 
 console.log("Pushing git tags to remote...");
-const pushTags = spawnSync('git', ['push', '--follow-tags'], { stdio: 'inherit' });
+const pushTags = spawnSync("git", ["push", "--follow-tags"], { stdio: "inherit" });
 if (pushTags.status !== 0) {
   console.error("Failed to push tags.");
   process.exit(1);
@@ -39,17 +43,25 @@ if (pushTags.status !== 0) {
 
 // Create a GitHub Release so the Action gets triggered to publish to GitHub Packages
 console.log("Creating GitHub Release...");
-const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
 const versionTag = `v${pkg.version}`;
 
 // We use --generate-notes to auto-populate the description with recent PRs/commits
-const ghRelease = spawnSync('gh', ['release', 'create', versionTag, '--title', `Release ${versionTag}`, '--generate-notes'], { stdio: 'inherit' });
+const ghRelease = spawnSync(
+  "gh",
+  ["release", "create", versionTag, "--title", `Release ${versionTag}`, "--generate-notes"],
+  { stdio: "inherit" },
+);
 
 if (ghRelease.status !== 0) {
   console.warn("\n⚠️  Failed to create GitHub Release automatically.");
-  console.warn("You may need to log into the 'gh' CLI or create the release manually on GitHub to trigger the GitHub Packages publish.");
+  console.warn(
+    "You may need to log into the 'gh' CLI or create the release manually on GitHub to trigger the GitHub Packages publish.",
+  );
 } else {
-  console.log(`\n✅ GitHub Release ${versionTag} created successfully! GitHub Actions will now publish to GitHub Packages.`);
+  console.log(
+    `\n✅ GitHub Release ${versionTag} created successfully! GitHub Actions will now publish to GitHub Packages.`,
+  );
 }
 
 console.log("Release complete!");

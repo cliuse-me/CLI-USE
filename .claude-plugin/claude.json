@@ -17,7 +17,10 @@
               "properties": {
                 "id": { "type": "string", "description": "Task identifier" },
                 "description": { "type": "string", "description": "Task description" },
-                "status": { "type": "string", "description": "Task status (e.g., 'pending', 'in-progress', 'done')" }
+                "status": {
+                  "type": "string",
+                  "description": "Task status (e.g., 'pending', 'in-progress', 'done')"
+                }
               },
               "required": ["id", "description", "status"]
             }

@@ -1,6 +1,7 @@
 ---
 allowed-tools: Bash(node, npx, tsx)
 ---
+
 # OpenCode CLI-Use Skill Definition
 
 This plugin adds dual persona agents (Planner & Implementer) to manage full TDD lifecycles using structured JSON plans.
