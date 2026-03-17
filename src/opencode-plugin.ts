@@ -19,7 +19,10 @@ export const cliUsePlugin: Plugin = async (_ctx) => {
 
       // 1. Planner Agent: Responsible exclusively for analyzing and designing the plan.
       // Explicitly stripped of file editing capabilities.
+      // Configured as a subagent so it does not appear in the primary OpenCode Tab cycle,
+      // forcing it to be used exclusively via the `/propose` slash command.
       cfg.agent["cli-use-planner"] = {
+        mode: "subagent",
         description:
           "An architect/planner that analyzes requirements and designs a plan. Cannot write code.",
         prompt:
@@ -33,7 +36,10 @@ export const cliUsePlugin: Plugin = async (_ctx) => {
       };
 
       // 2. Implementer Agent: Responsible for reading the plan and writing the code.
+      // Configured as a subagent so it does not appear in the primary OpenCode Tab cycle,
+      // forcing it to be used exclusively via the `/implement` slash command.
       cfg.agent["cli-use-implementer"] = {
+        mode: "subagent",
         description: "An implementer agent that writes code based on the saved plan.",
         prompt:
           "You are the CLI Use Implementer. Read the plan saved by the planner from cli-use/changes/latest/plan.json and implement the code according to the plan.",
