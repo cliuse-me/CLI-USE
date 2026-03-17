@@ -1,17 +1,25 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import * as fs from "fs/promises";
+import fs from "fs-extra";
 import * as path from "path";
 import * as os from "os";
-import { savePromptToFile, PromptLogEntry } from "./prompt-storage.js";
+import { savePromptToFile, setSavePath, getSavePath, PromptLogEntry } from "./prompt-storage.js";
 
 // Mock the file system
-vi.mock("fs/promises");
+vi.mock("fs-extra", () => ({
+  default: {
+    pathExists: vi.fn(),
+    readJson: vi.fn(),
+    ensureDir: vi.fn(),
+    outputJson: vi.fn(),
+  }
+}));
 vi.mock("os");
 
-describe("savePromptToFile", () => {
+describe("Prompt Storage", () => {
   const MOCK_HOME_DIR = "/mock/home";
   const expectedDirPath = path.join(MOCK_HOME_DIR, ".opencode");
-  const expectedFilePath = path.join(expectedDirPath, "saved-prompts.json");
+  const expectedConfigPath = path.join(expectedDirPath, "cli-use-config.json");
+  const expectedCustomPath = "/custom/path/prompts.json";
 
   beforeEach(() => {
     vi.mocked(os.homedir).mockReturnValue(MOCK_HOME_DIR);
@@ -22,45 +30,63 @@ describe("savePromptToFile", () => {
     vi.restoreAllMocks();
   });
 
-  it("should create a new file if one doesn't exist", async () => {
-    // Simulate file not existing
-    const error: any = new Error("File not found");
-    error.code = "ENOENT";
-    vi.mocked(fs.readFile).mockRejectedValue(error);
+  describe("getSavePath", () => {
+    it("should throw an error if not configured", async () => {
+      vi.mocked(fs.pathExists).mockResolvedValue(false as any);
+      
+      await expect(getSavePath()).rejects.toThrow("NOT_CONFIGURED");
+    });
 
-    await savePromptToFile("save", "test prompt");
-
-    expect(fs.mkdir).toHaveBeenCalledWith(expectedDirPath, { recursive: true });
-    
-    // Verify the write
-    expect(fs.writeFile).toHaveBeenCalledTimes(1);
-    const writeArgs = vi.mocked(fs.writeFile).mock.calls[0];
-    expect(writeArgs[0]).toBe(expectedFilePath);
-    
-    // Parse the JSON that was written
-    const writtenData = JSON.parse(writeArgs[1] as string) as PromptLogEntry[];
-    expect(writtenData).toHaveLength(1);
-    expect(writtenData[0].command).toBe("save");
-    expect(writtenData[0].prompt).toBe("test prompt");
-    expect(writtenData[0].timestamp).toBeDefined();
+    it("should return the path if configured", async () => {
+      vi.mocked(fs.pathExists).mockResolvedValue(true as any);
+      vi.mocked(fs.readJson).mockResolvedValue({ savedPromptsPath: expectedCustomPath });
+      
+      const p = await getSavePath();
+      expect(p).toBe(expectedCustomPath);
+    });
   });
 
-  it("should append to an existing file", async () => {
-    // Simulate an existing file with one prompt
-    const existingPrompts: PromptLogEntry[] = [
-      { timestamp: "2024-01-01T00:00:00.000Z", command: "save", prompt: "first prompt" }
-    ];
-    vi.mocked(fs.readFile).mockResolvedValue(JSON.stringify(existingPrompts));
+  describe("setSavePath", () => {
+    it("should resolve tilde and save config", async () => {
+      vi.mocked(fs.pathExists).mockResolvedValue(false as any);
+      
+      const p = await setSavePath("~/my-prompts.json");
+      const resolved = path.join(MOCK_HOME_DIR, "my-prompts.json");
+      expect(p).toBe(resolved);
 
-    await savePromptToFile("save", "second prompt");
+      expect(fs.ensureDir).toHaveBeenCalledWith(expectedDirPath);
+      expect(fs.outputJson).toHaveBeenCalledWith(expectedConfigPath, { savedPromptsPath: resolved }, { spaces: 2 });
+    });
+  });
 
-    expect(fs.writeFile).toHaveBeenCalledTimes(1);
-    const writeArgs = vi.mocked(fs.writeFile).mock.calls[0];
-    
-    // Parse the JSON that was written
-    const writtenData = JSON.parse(writeArgs[1] as string) as PromptLogEntry[];
-    expect(writtenData).toHaveLength(2);
-    expect(writtenData[0].prompt).toBe("first prompt");
-    expect(writtenData[1].prompt).toBe("second prompt");
+  describe("savePromptToFile", () => {
+    it("should append to an existing file when configured", async () => {
+      // Config exists and has a path
+      vi.mocked(fs.pathExists).mockImplementation(async (p) => {
+        if (p === expectedConfigPath) return true;
+        if (p === expectedCustomPath) return true;
+        return false;
+      });
+
+      // Mock reading config then reading the prompts file
+      vi.mocked(fs.readJson).mockImplementation(async (p) => {
+        if (p === expectedConfigPath) return { savedPromptsPath: expectedCustomPath };
+        if (p === expectedCustomPath) return [{ timestamp: "2024-01-01T00:00:00.000Z", command: "save", prompt: "first prompt" }];
+        return null;
+      });
+
+      const savedPath = await savePromptToFile("save", "second prompt");
+
+      expect(savedPath).toBe(expectedCustomPath);
+      expect(fs.outputJson).toHaveBeenCalledTimes(1);
+      
+      const writeArgs = vi.mocked(fs.outputJson).mock.calls[0];
+      expect(writeArgs[0]).toBe(expectedCustomPath);
+      
+      const writtenData = writeArgs[1] as PromptLogEntry[];
+      expect(writtenData).toHaveLength(2);
+      expect(writtenData[0].prompt).toBe("first prompt");
+      expect(writtenData[1].prompt).toBe("second prompt");
+    });
   });
 });
