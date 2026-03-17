@@ -6,7 +6,7 @@ describe('NPM Package Metadata', () => {
     const pkg = await fs.readJson('package.json');
     expect(pkg.name).toBe('@cli-use/core');
     expect(pkg.bin).toBeUndefined();
-    expect(pkg.repository).toBe('git+https://github.com/cliuse-me/CLI-USE.git');
+    expect(pkg.repository.url).toBe('git+https://github.com/cliuse-me/CLI-USE.git');
   });
 
   it('has correct files whitelist', async () => {
