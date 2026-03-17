@@ -4,7 +4,8 @@ import fs from 'fs-extra';
 describe('NPM Package Metadata', () => {
   it('has correct name and no bin field', async () => {
     const pkg = await fs.readJson('package.json');
-    expect(pkg.name).toBe('cli-use-core');
+    // Accept both local (cli-use-core) and GitHub Actions dynamically re-written name (@cliuse-me/cli-use-core)
+    expect(['cli-use-core', '@cliuse-me/cli-use-core']).toContain(pkg.name);
     expect(pkg.bin).toBeUndefined();
     expect(pkg.repository.url).toBe('git+https://github.com/cliuse-me/CLI-USE.git');
   });
