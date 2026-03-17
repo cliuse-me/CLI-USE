@@ -1,9 +1,6 @@
 {
-  "name": "cli-use-tdd",
+  "name": "cli-use",
   "version": "0.0.1",
-  "bin": {
-    "planner": "./dist/index.js"
-  },
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -17,12 +14,14 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.tsx",
-    "build": "tsup src/index.tsx src/opencode-plugin.ts --format esm --dts --clean",
+    "build": "tsup src/index.tsx src/opencode-plugin.ts bin/claude-validate.ts --format esm --dts --clean",
     "start": "node dist/index.js",
     "lint": "oxlint",
     "fmt": "oxfmt .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "release": "node run-release.js",
+    "prepublishOnly": "npm run build && npm run typecheck && npm run test"
   },
   "dependencies": {
     "@types/react": "^18.3.1",
@@ -42,11 +41,25 @@
     "@types/node": "^22.10.0",
     "@vitest/coverage-v8": "2.1.8",
     "globals": "^17.4.0",
+    "np": "^11.0.2",
     "oxfmt": "^0.36.0",
     "oxlint": "^1.51.0",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typescript": "^5.7.3",
     "vitest": "2.1.8"
-  }
+  },
+  "repository": "git+https://github.com/cliuse-me/CLI-USE.git",
+  "description": "AI-powered CLI adapter tool",
+  "author": "Adapter Engineer",
+  "license": "MIT",
+  "keywords": [
+    "cli",
+    "ai",
+    "adapter"
+  ],
+  "files": [
+    "dist",
+    ".claude-plugin"
+  ]
 }
