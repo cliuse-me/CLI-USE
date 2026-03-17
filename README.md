@@ -1,5 +1,7 @@
 # cli-use-tdd
 
+[![npm version](https://badge.fury.io/js/@cli-use%2Fcore.svg)](https://badge.fury.io/js/@cli-use%2Fcore)
+
 An Agentic Planning and TDD (Test-Driven Development) CLI adapter tool.
 
 ## 🚀 Installation & Quick Start
