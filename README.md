@@ -26,13 +26,25 @@ npm install cli-use-core
 
 **2. Auto-Setup for OpenCode & Claude Code (Recommended)**
 
-Run the following command to automatically generate the required plugin configuration files for both platforms in your project:
+You can initialize the configurations for both platforms at once, or choose the specific platform you use:
+
+**For both OpenCode and Claude Code:**
 
 ```bash
 npx cli-use-core init all
 ```
 
-_(You can also pass `opencode` or `claude` instead of `all` to set up a specific platform)._
+**For OpenCode only:**
+
+```bash
+npx cli-use-core init opencode
+```
+
+**For Claude Code only:**
+
+```bash
+npx cli-use-core init claude
+```
 
 **To Uninstall/Remove Configs:**
 If you ever want to cleanly remove the generated configuration files, run:
