@@ -14,7 +14,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.tsx",
-    "build": "tsup src/index.tsx src/opencode-plugin.ts bin/claude-validate.ts --format esm --dts --clean",
+    "build": "tsup",
     "start": "node dist/index.js",
     "lint": "oxlint",
     "fmt": "oxfmt .",
