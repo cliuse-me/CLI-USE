@@ -1,4 +1,4 @@
-# cli-use-tdd
+# cli-use-core
 
 [![npm version](https://badge.fury.io/js/cli-use-core.svg)](https://badge.fury.io/js/cli-use-core)
 
