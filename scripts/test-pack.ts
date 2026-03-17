@@ -14,7 +14,26 @@ function run(command: string, cwd: string = rootDir) {
 }
 
 async function main() {
+  const args = process.argv.slice(2);
+  const skipCi = args.includes("--no-ci") || args.includes("--skip-ci");
+
   console.info("🚀 Starting end-to-end package build & pack test...\n");
+
+  if (!skipCi) {
+    console.info("🛡️ Running CI checks (lint, typecheck, test)...");
+    try {
+      execSync("npm run lint && npm run typecheck && npm run test", {
+        cwd: rootDir,
+        stdio: "inherit",
+      });
+      console.info("✅ CI checks passed.\n");
+    } catch {
+      console.error("❌ CI checks failed. Run with --no-ci to bypass.");
+      process.exit(1);
+    }
+  } else {
+    console.info("⚠️ Bypassing CI checks as requested.\n");
+  }
 
   // 1. Build the project
   console.info("📦 Building project...");
@@ -33,8 +52,9 @@ async function main() {
     process.exit(1);
   }
 
+  // Use tarballPath so linter is happy (or remove it, but let's just log it)
   const tarballPath = path.join(rootDir, tarballName);
-  console.info(`✅ Generated tarball: ${tarballName}`);
+  console.info(`✅ Generated tarball: ${tarballName} at ${tarballPath}`);
 
   // 3. Create a clean test environment
   console.info(`\n🧹 Cleaning previous test environment at ${testEnvDir}...`);

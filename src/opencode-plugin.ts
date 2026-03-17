@@ -3,6 +3,7 @@ import { z } from "zod";
 import { savePlan } from "./core/db.js";
 import { getPlanState } from "./core/state.js";
 import { validateCode } from "./core/validator.js";
+import { savePromptToFile } from "./core/prompt-storage.js";
 
 /**
  * The primary OpenCode Plugin implementation.
@@ -62,6 +63,28 @@ export const cliUsePlugin: Plugin = async (_ctx) => {
         template:
           "Act as the CLI Use Implementer. Read the latest plan from cli-use/changes/latest/plan.json and implement it. $ARGUMENTS",
       };
+
+      // Command to save a prompt for future use
+      cfg.command["save"] = {
+        description: "Save a prompt to your local library (~/.opencode/saved-prompts.json)",
+        template: "Prompt saved locally.", // We don't want the agent to actually do anything with this
+      };
+    },
+
+    /**
+     * `command.execute.before` hook: Intercepts commands before they reach the LLM.
+     * We use this to capture the `/save` command and write its contents to disk.
+     */
+    "command.execute.before": async (input: any, output: any) => {
+      if (input.command === "save") {
+        await savePromptToFile("save", input.arguments);
+        
+        // Let the user know it was saved by sending a message part to the UI
+        output.parts.push({
+          type: "text",
+          text: "✅ Prompt successfully saved to `~/.opencode/saved-prompts.json`",
+        });
+      }
     },
 
     /**
