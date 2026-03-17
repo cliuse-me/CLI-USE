@@ -1,6 +1,6 @@
 # cli-use-tdd
 
-[![npm version](https://badge.fury.io/js/@cli-use%2Fcore.svg)](https://badge.fury.io/js/@cli-use%2Fcore)
+[![npm version](https://badge.fury.io/js/cli-use-core.svg)](https://badge.fury.io/js/cli-use-core)
 
 An Agentic Planning and TDD (Test-Driven Development) CLI adapter tool.
 
@@ -9,7 +9,7 @@ An Agentic Planning and TDD (Test-Driven Development) CLI adapter tool.
 **1. Install the package**
 
 ```bash
-npm i @cli-use/core
+npm i cli-use-core
 ```
 
 **2. Initialize the Claude Code Plugin (Optional)**
@@ -17,7 +17,7 @@ npm i @cli-use/core
 If you are using Claude Code, you need to copy the plugin hooks and prompts into your project root:
 
 ```bash
-cp -r node_modules/@cli-use/core/.claude-plugin .
+cp -r node_modules/cli-use-core/.claude-plugin .
 ```
 
 ---

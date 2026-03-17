@@ -23,7 +23,7 @@ jobs:
       
       - name: Rewrite package name for GitHub Packages
         run: |
-          node -e "import fs from 'fs'; const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8')); pkg.name = '@cliuse-me/core'; fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));"
+          node -e "import fs from 'fs'; const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8')); pkg.name = '@cliuse-me/cli-use-core'; fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));"
 
       - run: npm publish
         env:

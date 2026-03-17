@@ -1,5 +1,5 @@
 {
-  "name": "@cli-use/core",
+  "name": "cli-use-core",
   "version": "0.0.7",
   "exports": {
     ".": {
