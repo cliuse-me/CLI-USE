@@ -32,18 +32,52 @@ Then, create or update `.opencode/opencode.json` to load your local plugin file 
 }
 ```
 
-**3. Usage in OpenCode**
+**3. The Dual-Agent Workflow (Idea to Implementation)**
 
-Once configured, you can start using the dual-agent workflow in OpenCode:
+This tool separates the *thinking* from the *doing*. Instead of a single AI trying to design and code simultaneously (which often leads to hallucinations), we use a strict two-step pipeline.
 
-- **Plan your work:** Use the custom `/propose` command to trigger the planner agent to analyze requirements and generate an implementation plan.
-  ```bash
-  npx opencode run "/propose Add a new authentication system"
-  ```
-- **Implement the plan:** Use the custom `/implement` command to start the implementer agent, which will read the plan and execute it step-by-step.
-  ```bash
-  npx opencode run "/implement Let's start with task 1"
-  ```
+**Phase 1: Architecture & Planning**
+Start by asking the **Planner Agent** to architect your feature. The planner cannot write code—its only job is to analyze your codebase, clarify requirements, and write a strict specification plan.
+
+```bash
+npx opencode run "/propose Add a new authentication system with JWT"
+```
+*Result: The planner uses the `save_plan` tool to generate a detailed spec and task list, saving it locally to `cli-use/changes/latest/plan.json`.*
+
+**Phase 2: Test-Driven Implementation**
+Once the plan is saved, you switch to the **Implementer Agent** to execute it. The implementer automatically reads the plan generated in Phase 1 and begins coding step-by-step.
+
+```bash
+npx opencode run "/implement start by writing the tests for task 1"
+```
+*Result: The implementer strictly follows the `plan.json`, writes the tests first, implements the logic, and executes your project's test suite to ensure everything passes.*
+
+#### Workflow Diagram
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant CLI as OpenCode CLI
+    participant Planner as 🧠 Planner Agent
+    participant FS as 📂 cli-use/changes/...
+    participant Impl as 🛠️ Implementer Agent
+
+    Note over User, Impl: Phase 1: Architecture & Planning
+    User->>CLI: run "/propose <idea>"
+    CLI->>Planner: Trigger /propose command
+    Planner->>Planner: Analyze Codebase & Requirements
+    Planner->>FS: 💾 Call `save_plan` tool
+    FS-->>User: plan.json saved!
+
+    Note over User, Impl: Phase 2: Test-Driven Implementation
+    User->>CLI: run "/implement <instructions>"
+    CLI->>Impl: Trigger /implement command
+    FS-->>Impl: 📖 Auto-inject plan.json context
+    Impl->>Impl: Write Tests (TDD)
+    Impl->>Impl: Write Implementation Code
+    Impl->>Impl: Run Tests & Verify
+    Impl-->>User: Task completed successfully!
+```
 
 **4. Setup for Claude Code (Optional)**
 
