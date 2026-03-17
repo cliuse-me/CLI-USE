@@ -172,17 +172,11 @@ This project implements a dual-agent context across both **OpenCode** and **Clau
 The OpenCode adapter registers the `cli-use-planner` and `cli-use-implementer` agents programmatically, alongside custom `/propose` and `/implement` commands.
 
 1. **Configure OpenCode:**
-   Ensure you create an `opencode-plugin.ts` file in the root that exports the built plugin:
-   ```typescript
-   import { cliUsePlugin } from "./dist/opencode-plugin.js";
-
-   export default cliUsePlugin;
-   ```
-   And then load it in `.opencode/opencode.json` (see `opencode.example.json`):
+   Ensure your `.opencode/opencode.json` configuration points to the locally built artifact:
    ```json
    {
      "plugin": [
-       "../opencode-plugin.ts"
+       "../dist/index.js"
      ]
    }
    ```
