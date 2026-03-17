@@ -4,7 +4,7 @@
 
 An Agentic Planning and TDD (Test-Driven Development) CLI adapter tool.
 
-## 🚀 Installation & Quick Start
+## 🚀 Installation & Setup
 
 **1. Install the package**
 
@@ -31,6 +31,16 @@ Then, create or update `.opencode/opencode.json` to load your local plugin file 
   ]
 }
 ```
+
+**3. Setup for Claude Code (Optional)**
+
+If you are using Claude Code, you need to copy the plugin hooks and prompts into your project root:
+
+```bash
+cp -r node_modules/cli-use-core/.claude-plugin .
+```
+
+---
 
 ## 🧠 The Dual-Agent Workflow (Idea to Implementation)
 
@@ -77,14 +87,6 @@ sequenceDiagram
     Impl->>Impl: Write Implementation Code
     Impl->>Impl: Run Tests & Verify
     Impl-->>User: Task completed successfully!
-```
-
-**3. Setup for Claude Code (Optional)**
-
-If you are using Claude Code, you need to copy the plugin hooks and prompts into your project root:
-
-```bash
-cp -r node_modules/cli-use-core/.claude-plugin .
 ```
 
 ---
