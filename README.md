@@ -3,6 +3,7 @@
 [![npm version](https://badge.fury.io/js/cli-use-core.svg)](https://badge.fury.io/js/cli-use-core)
 
 An Agentic Planning and TDD (Test-Driven Development) CLI adapter tool.
+![ScreenRecording2026-03-17at20 04 11-ezgif com-speed](https://github.com/user-attachments/assets/6d891348-d40c-4bbe-930f-5c060279ffc0)
 
 ## 🚀 Installation & Setup
 
