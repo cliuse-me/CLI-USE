@@ -17,9 +17,9 @@ npm install cli-use-core
 Create an `opencode-plugin.ts` file in your project root to export the plugin:
 
 ```typescript
-import { cliUseTddPlugin } from "cli-use-core/plugin";
+import { cliUsePlugin } from "cli-use-core/plugin";
 
-export default cliUseTddPlugin;
+export default cliUsePlugin;
 ```
 
 Then, create or update `.opencode/opencode.json` to load your local plugin file (you can copy the `opencode.example.json` from this repository as a reference):
@@ -134,9 +134,9 @@ The OpenCode adapter registers the `cli-use-planner` and `cli-use-implementer` a
 1. **Configure OpenCode:**
    Ensure you create an `opencode-plugin.ts` file in the root that exports the built plugin:
    ```typescript
-   import { cliUseTddPlugin } from "./dist/opencode-plugin.js";
+   import { cliUsePlugin } from "./dist/opencode-plugin.js";
 
-   export default cliUseTddPlugin;
+   export default cliUsePlugin;
    ```
    And then load it in `.opencode/opencode.json` (see `opencode.example.json`):
    ```json

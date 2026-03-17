@@ -1,3 +1,3 @@
-import { cliUseTddPlugin } from "./dist/opencode-plugin.js";
+import { cliUsePlugin } from "./dist/opencode-plugin.js";
 
-export default cliUseTddPlugin;
+export default cliUsePlugin;

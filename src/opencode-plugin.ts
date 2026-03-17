@@ -8,7 +8,7 @@ import { validateCode } from "./core/validator.js";
  * The primary OpenCode Plugin implementation.
  * Bridges the gap between the OpenCode ecosystem hooks and the headless core logic.
  */
-export const cliUseTddPlugin: Plugin = async (_ctx) => {
+export const cliUsePlugin: Plugin = async (_ctx) => {
   return {
     /**
      * `config` hook: Programmatically injects agent personas and custom commands 

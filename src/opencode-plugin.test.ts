@@ -5,17 +5,17 @@ vi.mock('@opencode-ai/plugin', () => ({
   Plugin: {}
 }));
 
-import { cliUseTddPlugin } from './opencode-plugin.js';
+import { cliUsePlugin } from './opencode-plugin.js';
 import * as db from './core/db.js';
 import * as state from './core/state.js';
 
 vi.mock('./core/db.js');
 vi.mock('./core/state.js');
 
-describe('cliUseTddPlugin', () => {
+describe('cliUsePlugin', () => {
   it('returns a config with required agents and a save_plan tool', async () => {
     // @ts-ignore
-    const hooks = await cliUseTddPlugin({});
+    const hooks = await cliUsePlugin({});
     
     expect(hooks.config).toBeDefined();
     expect(hooks.tool).toBeDefined();
@@ -50,7 +50,7 @@ describe('cliUseTddPlugin', () => {
 
   it('injects plan state into system prompt for cli-use-implementer', async () => {
     // @ts-ignore
-    const hooks = await cliUseTddPlugin({});
+    const hooks = await cliUsePlugin({});
     expect(hooks['chat.params']).toBeDefined();
 
     const planState = {
@@ -79,7 +79,7 @@ describe('cliUseTddPlugin', () => {
 
   it('does not inject plan state for other agents', async () => {
     // @ts-ignore
-    const hooks = await cliUseTddPlugin({});
+    const hooks = await cliUsePlugin({});
     
     vi.mocked(state.getPlanState).mockResolvedValue(null);
     
@@ -93,7 +93,7 @@ describe('cliUseTddPlugin', () => {
 
   it('throws an Error if edit tool provides invalid code', async () => {
     // @ts-ignore
-    const hooks = await cliUseTddPlugin({});
+    const hooks = await cliUsePlugin({});
     expect(hooks['tool.execute.after']).toBeDefined();
 
     const editInputInvalid = {
@@ -114,7 +114,7 @@ describe('cliUseTddPlugin', () => {
 
   it('throws an Error if write tool provides invalid code', async () => {
     // @ts-ignore
-    const hooks = await cliUseTddPlugin({});
+    const hooks = await cliUsePlugin({});
     
     const writeInputInvalid = {
       tool: 'write',
@@ -134,7 +134,7 @@ describe('cliUseTddPlugin', () => {
 
   it('does not validate code for other tools', async () => {
     // @ts-ignore
-    const hooks = await cliUseTddPlugin({});
+    const hooks = await cliUsePlugin({});
     
     const otherToolInput = {
       tool: 'other',
