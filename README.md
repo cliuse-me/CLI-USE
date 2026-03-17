@@ -120,10 +120,10 @@ _\* `GOOGLE_API_KEYS` supports multiple keys separated by commas (e.g., `key1,ke
 
 ## 🚀 Installation & Quick Start
 
-**1. Install the package as a dev dependency**
+**1. Install the package**
 
 ```bash
-npm install --save-dev @cli-use/core
+npm i @cli-use/core
 ```
 
 **2. Initialize the Claude Code Plugin (Optional)**
