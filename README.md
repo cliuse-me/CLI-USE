@@ -102,6 +102,7 @@ These commands switch contexts and engage the specialized AI agents.
 ### Utility Commands (OpenCode)
 
 These commands provide helpful utilities for interacting with the CLI without executing agentic code tasks.
+![ScreenRecording2026-03-17at21 31 52-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/faafea49-46d6-4095-890a-c37b09f1e882)
 
 | Command       | Arguments                      | Description                                                                                                                                                    |
 | :------------ | :----------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- |
