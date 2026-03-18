@@ -99,6 +99,15 @@ These commands switch contexts and engage the specialized AI agents.
 | `/propose`   | `<idea or feature description>` | Switches to the **Planner Agent**. Analyzes your request, reads the codebase (read-only), and generates a strict TDD architecture plan using the `save_plan` tool. |
 | `/implement` | `[optional instructions]`       | Switches to the **Implementer Agent**. Automatically reads the latest saved plan and begins writing tests and implementation code to fulfill it.                   |
 
+### Utility Commands (OpenCode)
+
+These commands provide helpful utilities for interacting with the CLI without executing agentic code tasks.
+
+| Command       | Arguments                      | Description                                                                                                                                                    |
+| :------------ | :----------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/save`       | `<prompt text>`                | Intercepts your prompt and silently saves it to a local JSON library file, allowing you to build a personal collection of high-quality prompts.                |
+| `/configsave` | `<absolute/path/to/file.json>` | Configures the destination file path for the `/save` command. By default, it saves to `~/.opencode/saved-prompts.json` if configured without a path initially. |
+
 ### CLI Utilities
 
 These commands are run in your standard terminal to manage the tool's installation in your project.
