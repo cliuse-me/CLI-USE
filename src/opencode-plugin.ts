@@ -3,7 +3,7 @@ import { z } from "zod";
 import { savePlan } from "./core/db.js";
 import { getPlanState } from "./core/state.js";
 import { validateCode } from "./core/validator.js";
-import { savePromptToFile } from "./core/prompt-storage.js";
+import { savePromptToFile, setSavePath } from "./core/prompt-storage.js";
 
 /**
  * The primary OpenCode Plugin implementation.
@@ -66,8 +66,13 @@ export const cliUsePlugin: Plugin = async (_ctx) => {
 
       // Command to save a prompt for future use
       cfg.command["save"] = {
-        description: "Save a prompt to your local library (~/.opencode/saved-prompts.json)",
+        description: "Save a prompt to your local library",
         template: "Prompt saved locally.", // We don't want the agent to actually do anything with this
+      };
+
+      cfg.command["configsave"] = {
+        description: "Configure where your prompts are saved (e.g. /configsave ~/.opencode/my-prompts.json)",
+        template: "Config saved locally.",
       };
     },
 
@@ -77,13 +82,48 @@ export const cliUsePlugin: Plugin = async (_ctx) => {
      */
     "command.execute.before": async (input: any, output: any) => {
       if (input.command === "save") {
-        await savePromptToFile("save", input.arguments);
-        
-        // Let the user know it was saved by sending a message part to the UI
-        output.parts.push({
-          type: "text",
-          text: "✅ Prompt successfully saved to `~/.opencode/saved-prompts.json`",
-        });
+        try {
+          const filePath = await savePromptToFile("save", input.arguments);
+          output.parts.push({
+            type: "text",
+            text: `✅ Prompt successfully saved to \`${filePath}\``,
+          });
+        } catch (error: any) {
+          if (error.message === "NOT_CONFIGURED") {
+            output.parts.push({
+              type: "text",
+              text: `❌ **Save path not configured!**\n\nBefore you can save prompts, you must specify where to store them. Please run the configuration command:\n\n\`/configsave ~/.opencode/saved-prompts.json\``,
+            });
+          } else {
+            output.parts.push({
+              type: "text",
+              text: `❌ Failed to save prompt: ${error.message}`,
+            });
+          }
+        }
+      }
+
+      if (input.command === "configsave") {
+        if (!input.arguments || input.arguments.trim() === "") {
+          output.parts.push({
+            type: "text",
+            text: `❌ Please provide a path. Example: \`/configsave ~/.opencode/saved-prompts.json\``,
+          });
+          return;
+        }
+
+        try {
+          const savedPath = await setSavePath(input.arguments.trim());
+          output.parts.push({
+            type: "text",
+            text: `✅ Configuration updated! Prompts will now be saved to \`${savedPath}\`\n\nYou can now use the \`/save\` command!`,
+          });
+        } catch (error: any) {
+          output.parts.push({
+            type: "text",
+            text: `❌ Failed to save configuration: ${error.message}`,
+          });
+        }
       }
     },
 
